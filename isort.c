@@ -19,7 +19,7 @@ void gen_rand_array(int x[], int size, int max)
 void show(int x[], int n)
 {
     for (int i = 0; i < n; i++) {
-        printf("%d ", x[i]);
+        printf("%2d ", x[i]);
         if ( i > 1 && i%30 == 0){
             if (DEBUG == 1) {
                 printf("\n");
@@ -28,6 +28,26 @@ void show(int x[], int n)
     }
     printf("\n");
 }
+
+void show_color(int x[], int n, int left, int right)
+{
+    for (int i = 0; i < n; i++) {
+        if (i == left || i == right){
+            printf("\033[31m%2d\033[0m ", x[i]);
+        }else{
+            printf("%2d ", x[i]);
+        }
+
+        if ( i > 1 && i%30 == 0){
+            if (DEBUG == 1) {
+                printf("\n");
+            }
+        }
+    }
+    printf("\n");
+}
+
+
 
 void check_array(int x[], int max)
 {
@@ -51,8 +71,9 @@ void bubble_sort(int arr[], int size)
     for (int i = 0; i < size - 1; i++){
         for( int j = 0; j < size - 1 - i; j++){
             if (arr[j] > arr[j+1]){
+                show_color(arr, MAX, j, j + 1);
                 swap(&arr[j], &arr[j+1]);
-                show(arr, size);
+                //show(arr, size);
             }
         }
     }
@@ -82,10 +103,12 @@ int partition(int arr[], int lower, int upper)
     for (int j = lower; j < upper; j++) {
         if (arr[j] <= pivot) {  
             i++;  // increment the index of smaller element
+            show_color(arr, MAX, i, j);
             swap(&arr[i], &arr[j]);
         }
     }
 
+    show_color(arr, MAX, i + 1, upper);
     swap(&arr[i + 1], &arr[upper]);  
     return (i + 1);
 }
@@ -191,8 +214,8 @@ void shell_sort(int arr[], int len)
     for (gap = len / 2; gap > 0; gap = gap / 2)
         for (i = gap; i < len; i++)
             for (j = i - gap; j >= 0 && arr[j] > arr[j + gap]; j = j - gap){
+                show_color(arr, MAX, j, j + gap);
                 swap(&arr[j], &arr[j + gap]);
-                show(arr, MAX);
             }
 }
 
@@ -210,16 +233,15 @@ static void test() {
     show(arr, MAX);
     
     /* sort array */
-    //_bubble_sort(arr, MAX);
+    // bubble_sort(arr, MAX);
     //bubble_sort(arr, MAX);
-    //quick_sort(arr, 0, MAX - 1);
+    quick_sort(arr, 0, MAX - 1);
     //insert_sort(arr, MAX);
     //select_sort(arr, MAX);
     
-    // BUG
     // merge_sort(arr, MAX, 0, MAX - 1);
     // merge_sort(arr, 0, MAX);
-    shell_sort(arr, MAX);
+    // shell_sort(arr, MAX);
 
     printf("\nafter sort\n");
     show(arr, MAX);
