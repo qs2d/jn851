@@ -136,69 +136,67 @@ void select_sort(int *arr, int size)
 
 
 
-// merge sort
-void merge(int *a, int l, int r, int n)
+
+// merge short
+void merge(int *num, int start, int mid, int end)
 {
-    int *b = (int *)malloc(n * sizeof(int)); /* dynamic memory must be freed */
-    int c = l;
-    int p1, p2;
-    p1 = l;
-    p2 = ((l + r) / 2) + 1;
-    while ((p1 < ((l + r) / 2) + 1) && (p2 < r + 1))
-    {
-        if (a[p1] <= a[p2])
-        {
-            b[c++] = a[p1];
-            p1++;
-        }
-        else
-        {
-            b[c++] = a[p2];
-            p2++;
+    int *temp = (int *)malloc((end-start+1) * sizeof(int));    //申请空间来存放两个有序区归并后的临时区域
+    int i = start;
+    int j = mid + 1;
+    int k = 0;
+
+    while (i <= mid && j <= end) {
+        if (num[i] <= num[j]) {
+            temp[k++] = num[i++];
+        } else {
+            temp[k++] = num[j++];
         }
     }
 
-    if (p2 == r + 1)
-    {
-        while ((p1 < ((l + r) / 2) + 1))
-        {
-            b[c++] = a[p1];
-            p1++;
-        }
-    }
-    else
-    {
-        while ((p2 < r + 1))
-        {
-            b[c++] = a[p2];
-            p2++;
-        }
+    while (i <= mid) {
+        temp[k++] = num[i++];
     }
 
-    for (c = l; c < r - l + 1; c++) a[c] = b[c];
+    while (j <= end) {
+        temp[k++] = num[j++];
+    }
 
-    free(b);
+    //将临时区域中排序后的元素，整合到原数组中
+    for (i = 0; i < k; i++) {
+        num[start + i] = temp[i];
+    }
+
+    free(temp);
 }
 
-/** Merge sort algorithm implementation
- * @param a array to sort
- * @param n number of elements in the array
- * @param l index to sort from
- * @param r index to sort till
- */
-void merge_sort(int *arr, int size, int left, int right)
+/* 将序列对半拆分直到序列长度为1*/
+void merge_sort(int *num, int start, int end)
 {
-    if (right - left == 1) {
-        if (arr[left] > arr[right])
-            swap(&arr[left], &arr[right]);
-    }
-    else if (left != right) {
-        merge_sort(arr, size, left, (left + right) / 2);
-        merge_sort(arr, size, ((left + right) / 2) + 1, right);
-        merge(arr, left, right, size);
+    int mid = start + (end - start) / 2;
+
+    if (start >= end) {
+        return;
     }
 
+    merge_sort(num, start, mid);
+    merge_sort(num, mid + 1, end);
+
+    merge(num, start, mid, end);
 }
+
+void shell_sort(int arr[], int len)
+{
+    int i, j, gap;
+
+    for (gap = len / 2; gap > 0; gap = gap / 2)
+        for (i = gap; i < len; i++)
+            for (j = i - gap; j >= 0 && arr[j] > arr[j + gap]; j = j - gap){
+                swap(&arr[j], &arr[j + gap]);
+                show(arr, MAX);
+            }
+}
+
+
 
 static void test() {
     /* simple int array for testing */
@@ -216,10 +214,12 @@ static void test() {
     //bubble_sort(arr, MAX);
     //quick_sort(arr, 0, MAX - 1);
     //insert_sort(arr, MAX);
-    select_sort(arr, MAX);
+    //select_sort(arr, MAX);
     
     // BUG
-    //merge_sort(arr, MAX, 0, MAX - 1);
+    // merge_sort(arr, MAX, 0, MAX - 1);
+    // merge_sort(arr, 0, MAX);
+    shell_sort(arr, MAX);
 
     printf("\nafter sort\n");
     show(arr, MAX);
