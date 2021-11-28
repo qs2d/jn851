@@ -1,7 +1,9 @@
 PWD=$(shell pwd)
 all:
 	gcc isort.c -o isort
+	gcc dp.c -o dp
 	./isort
+	./dp
 
 perf:
 	gcc -pg isort.c -o pisort

@@ -4,7 +4,7 @@
 #include <stdbool.h>  /// for boolean values: true, false  
 #include <time.h>
 
-#define MAX 30
+#define MAX 10
 #define _swap(a,b) (a^=b,b^=a,a^=b)
 #define DEBUG 1
 
